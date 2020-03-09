@@ -6,11 +6,12 @@
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/tv_error_tip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="错误测试" />
-    <!--下面Button添加了retry，所以错误页显示时，可监听到此控件点击事件-->
+
     <Button
         android:id="@+id/retry"
         android:layout_width="wrap_content"

@@ -1,5 +1,7 @@
 # Android缺省页控件封装
 
+![](a.gif)
+
 # 引入
 Add it in your root build.gradle at the end of repositories:
 ```groovy
@@ -13,7 +15,7 @@ Add it in your root build.gradle at the end of repositories:
 Step 2. Add the dependency
 ```groovy
 	dependencies {
-	        implementation 'com.github.hisgod:DefaultPage:0.0.1'
+	        implementation 'com.github.hisgod:DefaultPage:0.0.2'
 	}
 ```
 
@@ -21,21 +23,38 @@ Step 2. Add the dependency
 
 ## 支持属性
 
+> DefaultView格式
+
 ```xml
-app:empty_layout="@layout/empty"    //自定义空页布局
-app:error_layout="@layout/error"    //自定义错误布局
-app:load_layout="@layout/load"      //自定义加载布局
+<?xml version="1.0" encoding="utf-8"?>
+<com.aib.view.DefaultView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/dv"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:empty_layout="@layout/empty"
+    app:error_layout="@layout/error"
+    app:load_layout="@layout/load">
+	...
+</com.aib.view.DefaultView>
 ```
 
-**注意：错误页面显示时，方便开发者不需要每次在请求失败回调中，进行`findViewById`找到重试按钮的`ID`，`DefaultView`已经封装错误页面中某个控件包含`retry`ID的，即可使用下面错误页函数，并响应设置了`retry`id控件的点击事件**
+> 添加自定义空页面XML布局
 
-```kotlin
-dv.showError {
-	getData()
-}
+```xml
+app:empty_layout="@layout/empty"
 ```
 
-> 错误页布局规范如下
+> 添加自定义错误页面XML布局
+
+```xml
+app:error_layout="@layout/error"
+```
+
+错误页XML布局规范如下
+
+* 错误页XML布局中给任何一个控件添加**唯一ID**，开发者不需要每次在网络请求的错误回调设置**重试控件**点击事件
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -46,11 +65,12 @@ dv.showError {
     android:orientation="vertical">
 
     <TextView
+        android:id="@+id/tv_error_tip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="错误测试" />
-    <!--下面Button添加了retry，所以错误页显示时，可监听到此控件点击事件-->
+
     <Button
         android:id="@+id/retry"
         android:layout_width="wrap_content"
@@ -59,11 +79,26 @@ dv.showError {
 </LinearLayout>
 ```
 
-* **所以错误页，可以给任何控件设置`retry`作为`id`，但必须唯一**
+网络请求错误回调，直接调用`showError`可响应设置了`id`为`retry`点击事件
+
+```kotlin
+//方式一：显示错误信息提示
+tv_error_tip.text = it.msg
+//设置retry的ID控件点击事件
+dv.showError {
+	getData()
+}
+```
+
+> 添加自定义加载XML布局
+
+```xml
+app:load_layout="@layout/load"
+```
 
 ## 使用步骤
 
-> 添加DefaultView控件
+1. 添加DefaultView控件，并添加自定义加载，自定义错误，自定义空布局
 
 ```xml
 <com.aib.view.DefaultView 
@@ -79,43 +114,37 @@ dv.showError {
 </com.aib.view.DefaultView>
 ```
 
-> 结合网络请求库使用（案例使用Retrofit）
+2. 网络请求回调处，根据回调的标识，进行显示相对应的加载页，错误页，空数据页，成功页的显示
 
 ```kotlin
-        Retrofit.Builder()
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.newThread()))
-                .baseUrl("https://tenapi.cn/")
-                .build()
-                .create(ApiService::class.java)
-                .getData("广州")
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Observer<WeatherBean> {
-                    override fun onComplete() {
-
+    private fun getData() {
+        vm.getWeatherData("广州").observe(this, androidx.lifecycle.Observer {
+            when (it.status) {
+                NetStatus.LOAD -> {
+                    //显示加载UI
+                    dv.showLoad()
+                }
+                NetStatus.SUCCESS -> {
+                    //第一步：显示成功UI
+                    dv.showSuccess()
+                    //第二步：设置UI数据
+                    tv.text = it.data.toString()
+                }
+                NetStatus.ERROR -> {
+                    //方式一：显示错误信息提示
+                    tv_error_tip.text = it.msg
+                    //设置retry的ID控件点击事件
+                    dv.showError {
+                        getData()
                     }
 
-                    override fun onSubscribe(d: Disposable) {
-                        //显示加载UI
-                        dv.showLoad()
-                    }
-
-                    override fun onNext(t: WeatherBean) {
-                        //显示成功UI
-                        dv.showSuccess()
-                        tv.text = t.data.ganmao
-                    }
-
-                    override fun onError(e: Throwable) {
-                        //显示错误UI，包含retry的ID控件点击事件相应
-                        dv.showError {
-                            getData()
-                        }
-
-                        //显示错误UI，不包含retry的ID控件点击事件相应
-                        //dv.showError()
-                    }
-                })
+                    //方式二：显示错误UI，不包含retry的ID控件点击事件相应
+                    //tv_error_tip.text = it.msg
+                    //dv.showError()
+                }
+            }
+        })
+    }
 ```
 
-![](a.gif)
+**详细使用，请clone仓库代码，run起来熟悉**
