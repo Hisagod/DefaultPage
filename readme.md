@@ -15,7 +15,7 @@ Add it in your root build.gradle at the end of repositories:
 Step 2. Add the dependency
 ```groovy
 	dependencies {
-	        implementation 'com.github.hisgod:DefaultPage:0.0.2'
+	        implementation 'com.github.hisgod:DefaultPage:0.0.3'
 	}
 ```
 
