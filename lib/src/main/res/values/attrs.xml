@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="DefaultView">
+        <!--加载中页-->
         <attr name="load_layout" format="reference" />
+        <!--加载错误页-->
         <attr name="error_layout" format="reference" />
+        <!--加载空页-->
         <attr name="empty_layout" format="reference" />
     </declare-styleable>
 </resources>

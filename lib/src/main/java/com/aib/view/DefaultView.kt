@@ -21,11 +21,14 @@ class DefaultView @JvmOverloads constructor(context: Context, attrs: AttributeSe
     init {
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.DefaultView)
 
+        //根据自定义属性加载布局，如果布局为空，则加载库中默认的布局
         loadLayout = typedArray.getResourceId(R.styleable.DefaultView_load_layout, R.layout.default_view_load)
         errorLayout = typedArray.getResourceId(R.styleable.DefaultView_error_layout, R.layout.default_view_error)
         emptyLayout = typedArray.getResourceId(R.styleable.DefaultView_empty_layout, R.layout.default_view_empty)
 
         typedArray.recycle()
+
+        //将子View都添加到本View
         val loadView = LayoutInflater.from(context).inflate(loadLayout, this, false)
         addView(loadView)
         val errorView = LayoutInflater.from(context).inflate(errorLayout, this, false)
@@ -37,6 +40,7 @@ class DefaultView @JvmOverloads constructor(context: Context, attrs: AttributeSe
     override fun onFinishInflate() {
         super.onFinishInflate()
 
+        //当本View加载完成，取出对应子View，并全部隐藏子View
         loadView = getChildAt(0)
         errorView = getChildAt(1)
         emptyView = getChildAt(2)
@@ -44,6 +48,7 @@ class DefaultView @JvmOverloads constructor(context: Context, attrs: AttributeSe
         loadView.setVisibility(View.GONE)
         errorView.setVisibility(View.GONE)
         emptyView.setVisibility(View.GONE)
+        successView.setVisibility(View.GONE)
     }
 
     /**
@@ -63,6 +68,9 @@ class DefaultView @JvmOverloads constructor(context: Context, attrs: AttributeSe
         emptyView.visibility = View.GONE
     }
 
+    /**
+     * 封装错误布局里，重试按钮回调
+     */
     fun showError(callback: () -> Unit) {
         showError()
         try {
@@ -71,7 +79,7 @@ class DefaultView @JvmOverloads constructor(context: Context, attrs: AttributeSe
                         callback()
                     }
         } catch (e: Exception) {
-            throw NullPointerException("重试控件ID缺少")
+            throw NullPointerException("重试控件ID必为<retry>")
         }
     }
 

@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.aib.page.R
+import com.aib.page.extension.getViewModel
 import com.aib.page.viewmodel.MainViewModel
 import com.aib.page.net.NetStatus
 import kotlinx.android.synthetic.main.activity_main.*
@@ -12,23 +13,45 @@ import kotlinx.android.synthetic.main.error.*
 
 class MainActivity : AppCompatActivity() {
 
-    private val vm by lazy {
-        ViewModelProvider.AndroidViewModelFactory.getInstance(application).create(MainViewModel::class.java)
-    }
+    private val vm by lazy { getViewModel(MainViewModel::class.java) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        getData()
+        loadSuccess()
+        loadEmpty()
+        loadError()
     }
 
-    private fun getData() {
-        vm.getWeatherData("广州").observe(this, androidx.lifecycle.Observer {
+    private fun loadSuccess() {
+        btn_success.setOnClickListener {
+            getData(10)
+        }
+    }
+
+    private fun loadEmpty() {
+        btn_empty.setOnClickListener {
+            getData(0)
+        }
+    }
+
+    private fun loadError() {
+        btn_error.setOnClickListener {
+            getData(-1)
+        }
+    }
+
+    private fun getData(count: Int) {
+        vm.getOne(count).observe(this, androidx.lifecycle.Observer {
             when (it.status) {
                 NetStatus.LOAD -> {
                     //显示加载UI
                     dv.showLoad()
+                }
+                NetStatus.EMPTY -> {
+                    //首次获取数据为null
+                    dv.showEmpty()
                 }
                 NetStatus.SUCCESS -> {
                     //第一步：显示成功UI
@@ -41,7 +64,7 @@ class MainActivity : AppCompatActivity() {
                     tv_error_tip.text = it.msg
                     //设置retry的ID控件点击事件
                     dv.showError {
-                        getData()
+                        getData(count)
                     }
 
                     //方式二：显示错误UI，不包含retry的ID控件点击事件相应

@@ -117,12 +117,16 @@ app:load_layout="@layout/load"
 2. 网络请求回调处，根据回调的标识，进行显示相对应的加载页，错误页，空数据页，成功页的显示
 
 ```kotlin
-    private fun getData() {
-        vm.getWeatherData("广州").observe(this, androidx.lifecycle.Observer {
+    private fun getData(count: Int) {
+        vm.getOne(count).observe(this, androidx.lifecycle.Observer {
             when (it.status) {
                 NetStatus.LOAD -> {
                     //显示加载UI
                     dv.showLoad()
+                }
+                NetStatus.EMPTY -> {
+                    //首次获取数据为null
+                    dv.showEmpty()
                 }
                 NetStatus.SUCCESS -> {
                     //第一步：显示成功UI
@@ -135,7 +139,7 @@ app:load_layout="@layout/load"
                     tv_error_tip.text = it.msg
                     //设置retry的ID控件点击事件
                     dv.showError {
-                        getData()
+                        getData(count)
                     }
 
                     //方式二：显示错误UI，不包含retry的ID控件点击事件相应
