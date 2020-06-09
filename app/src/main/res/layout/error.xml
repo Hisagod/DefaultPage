@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--根布局设置了retry作为id，显示错误页时，点击页面即可响应回调-->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/retry"
     android:layout_width="match_parent"

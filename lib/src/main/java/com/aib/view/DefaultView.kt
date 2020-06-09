@@ -2,12 +2,15 @@ package com.aib.view
 
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import com.aib.lib.R
 
 class DefaultView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : FrameLayout(context, attrs) {
+
+    private val TAG = javaClass.simpleName
 
     private val loadLayout: Int
     private val errorLayout: Int
@@ -61,7 +64,7 @@ class DefaultView @JvmOverloads constructor(context: Context, attrs: AttributeSe
         emptyView.visibility = View.GONE
     }
 
-    fun showError() {
+    private fun showError() {
         loadView.visibility = View.GONE
         successView.visibility = View.GONE
         errorView.visibility = View.VISIBLE
@@ -69,7 +72,7 @@ class DefaultView @JvmOverloads constructor(context: Context, attrs: AttributeSe
     }
 
     /**
-     * 封装错误布局里，重试按钮回调
+     * 显示错误页，并提供回调
      */
     fun showError(callback: () -> Unit) {
         showError()
@@ -79,7 +82,7 @@ class DefaultView @JvmOverloads constructor(context: Context, attrs: AttributeSe
                         callback()
                     }
         } catch (e: Exception) {
-            throw NullPointerException("重试控件ID必为<retry>")
+            Log.e(TAG, "重试控件ID必为<retry>")
         }
     }
 
