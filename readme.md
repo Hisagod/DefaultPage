@@ -22,6 +22,21 @@ Step 2. Add the dependency
 
 # Client端
 
+# 初始化
+
+请在Application子类内进行初始化，设置加载中页面，加载空页面，加载失败页全局布局样式，如果某个页面某个页面不同，可在XML布局加上特有的页面
+
+```kotlin
+class PageApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+
+        //初始化全局布局文件
+        DefaultPage.init(R.layout.load, R.layout.empty, R.layout.error)
+    }
+}
+```
+
 ## 支持属性
 
 | 属性             | 作用   |

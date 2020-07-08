@@ -6,7 +6,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
-import com.aib.lib.R
+import com.aib.other.DefaultPage
+import com.lib.df.page.R
 
 class DefaultView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : FrameLayout(context, attrs) {
 
@@ -25,9 +26,9 @@ class DefaultView @JvmOverloads constructor(context: Context, attrs: AttributeSe
         val typedArray = context.obtainStyledAttributes(attrs, R.styleable.DefaultView)
 
         //根据自定义属性加载布局，如果布局为空，则加载库中默认的布局
-        loadLayout = typedArray.getResourceId(R.styleable.DefaultView_load_layout, R.layout.default_view_load)
-        errorLayout = typedArray.getResourceId(R.styleable.DefaultView_error_layout, R.layout.default_view_error)
-        emptyLayout = typedArray.getResourceId(R.styleable.DefaultView_empty_layout, R.layout.default_view_empty)
+        loadLayout = typedArray.getResourceId(R.styleable.DefaultView_load_layout, DefaultPage.loadRes)
+        errorLayout = typedArray.getResourceId(R.styleable.DefaultView_error_layout, DefaultPage.errorRes)
+        emptyLayout = typedArray.getResourceId(R.styleable.DefaultView_empty_layout, DefaultPage.emptyRes)
 
         typedArray.recycle()
 

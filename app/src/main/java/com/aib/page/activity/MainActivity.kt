@@ -2,7 +2,6 @@ package com.aib.page.activity
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.aib.page.R
 import com.aib.page.extension.getViewModel
 import com.aib.page.viewmodel.MainViewModel
