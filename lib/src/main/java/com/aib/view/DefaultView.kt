@@ -6,6 +6,8 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.TextView
+import androidx.annotation.IdRes
 import com.aib.other.DefaultPage
 import com.lib.df.page.R
 
@@ -85,6 +87,13 @@ class DefaultView @JvmOverloads constructor(context: Context, attrs: AttributeSe
         } catch (e: Exception) {
             Log.e(TAG, "重试控件ID必为<retry>")
         }
+    }
+
+    /**
+     * 返回错误页面实例
+     */
+    fun getErrorView(): View {
+        return errorView
     }
 
     fun showEmpty() {

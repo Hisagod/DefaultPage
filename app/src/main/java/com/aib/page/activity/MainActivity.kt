@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 NetStatus.ERROR -> {
                     //显示错误信息提示
-                    tv_error_tip.text = it.msg
+                    tv_error_msg.text = it.msg
                     //设置retry的ID控件点击事件
                     dv.showError {
                         getData(count)
