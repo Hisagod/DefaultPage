@@ -8,6 +8,10 @@ class PageApplication : Application() {
         super.onCreate()
 
         //初始化全局布局文件
-        DefaultPage.init(R.layout.load, R.layout.empty, R.layout.error)
+        DefaultPage.Builder()
+                .load(R.layout.load)
+                .empty(R.layout.empty)
+                .error(R.layout.error)
+                .build()
     }
 }

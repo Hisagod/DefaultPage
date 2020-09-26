@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.IdRes
 import com.aib.other.DefaultPage
 import com.lib.df.page.R
@@ -51,20 +52,29 @@ class DefaultView @JvmOverloads constructor(context: Context, attrs: AttributeSe
         errorView = getChildAt(1)
         emptyView = getChildAt(2)
         successView = getChildAt(childCount - 1)
+
         loadView.setVisibility(View.GONE)
         errorView.setVisibility(View.GONE)
         emptyView.setVisibility(View.GONE)
-        successView.setVisibility(View.GONE)
+        successView.setVisibility(View.INVISIBLE)
     }
 
-    /**
-     * 显示加载UI
-     */
     fun showLoad() {
+        if (successView.visibility == View.VISIBLE)
+            return
+
         loadView.visibility = View.VISIBLE
         successView.visibility = View.GONE
         errorView.visibility = View.GONE
         emptyView.visibility = View.GONE
+    }
+
+    /**
+     * 加载页：有文案提示，文案可动态变化(每个页面有可能不一样的文案)
+     */
+    fun showLoad(callback: (loadView: View) -> Unit) {
+        showLoad()
+        callback(loadView)
     }
 
     private fun showError() {
@@ -74,33 +84,25 @@ class DefaultView @JvmOverloads constructor(context: Context, attrs: AttributeSe
         emptyView.visibility = View.GONE
     }
 
-    /**
-     * 显示错误页，并提供回调
-     */
-    fun showError(callback: () -> Unit) {
+    fun showError(callback: (errorView: View) -> Unit) {
         showError()
-        try {
-            errorView.findViewById<View>(R.id.retry)
-                    .setOnClickListener {
-                        callback()
-                    }
-        } catch (e: Exception) {
-            Log.e(TAG, "重试控件ID必为<retry>")
-        }
-    }
-
-    /**
-     * 返回错误页面实例
-     */
-    fun getErrorView(): View {
-        return errorView
+        callback(errorView)
     }
 
     fun showEmpty() {
+        if (successView.visibility == View.VISIBLE) {
+            return
+        }
+
         loadView.visibility = View.GONE
         successView.visibility = View.GONE
         errorView.visibility = View.GONE
         emptyView.visibility = View.VISIBLE
+    }
+
+    fun showEmpty(callback: (emptyView: View) -> Unit) {
+        showEmpty()
+        callback(emptyView)
     }
 
     fun showSuccess() {

@@ -6,11 +6,11 @@
     <ProgressBar
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@id/tv_tip"
+        android:layout_above="@id/tv_load_tip"
         android:layout_centerHorizontal="true" />
 
     <TextView
-        android:id="@+id/tv_tip"
+        android:id="@+id/tv_load_tip"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
