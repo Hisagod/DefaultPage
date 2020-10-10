@@ -59,9 +59,11 @@ class DefaultView @JvmOverloads constructor(context: Context, attrs: AttributeSe
         successView.setVisibility(View.INVISIBLE)
     }
 
-    fun showLoad() {
-        if (successView.visibility == View.VISIBLE)
-            return
+    fun showLoad(ignore: Boolean = false) {
+        if (!ignore) {
+            if (successView.visibility == View.VISIBLE)
+                return
+        }
 
         loadView.visibility = View.VISIBLE
         successView.visibility = View.GONE
@@ -72,26 +74,32 @@ class DefaultView @JvmOverloads constructor(context: Context, attrs: AttributeSe
     /**
      * 加载页：有文案提示，文案可动态变化(每个页面有可能不一样的文案)
      */
-    fun showLoad(callback: (loadView: View) -> Unit) {
-        showLoad()
+    fun showLoad(ignore: Boolean = false, callback: (loadView: View) -> Unit) {
+        showLoad(ignore)
         callback(loadView)
     }
 
-    private fun showError() {
+    private fun showError(ignore: Boolean = false) {
+        if (!ignore) {
+            if (successView.visibility == View.VISIBLE)
+                return
+        }
+
         loadView.visibility = View.GONE
         successView.visibility = View.GONE
         errorView.visibility = View.VISIBLE
         emptyView.visibility = View.GONE
     }
 
-    fun showError(callback: (errorView: View) -> Unit) {
-        showError()
+    fun showError(ignore: Boolean = false, callback: (errorView: View) -> Unit) {
+        showError(ignore)
         callback(errorView)
     }
 
-    fun showEmpty() {
-        if (successView.visibility == View.VISIBLE) {
-            return
+    fun showEmpty(ignore: Boolean = false) {
+        if (!ignore) {
+            if (successView.visibility == View.VISIBLE)
+                return
         }
 
         loadView.visibility = View.GONE
@@ -100,8 +108,8 @@ class DefaultView @JvmOverloads constructor(context: Context, attrs: AttributeSe
         emptyView.visibility = View.VISIBLE
     }
 
-    fun showEmpty(callback: (emptyView: View) -> Unit) {
-        showEmpty()
+    fun showEmpty(ignore: Boolean = false, callback: (emptyView: View) -> Unit) {
+        showEmpty(ignore)
         callback(emptyView)
     }
 

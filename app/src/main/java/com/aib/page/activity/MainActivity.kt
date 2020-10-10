@@ -40,7 +40,9 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
                 NetStatus.EMPTY -> {
-                    dv.showEmpty()
+                    dv.showEmpty {
+
+                    }
                 }
             }
         }
